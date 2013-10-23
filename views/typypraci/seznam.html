@@ -1,0 +1,51 @@
+{{extend 'layout.html'}}
+
+{{block navigace}}
+{{=LI(B(T('Typy prací / materiálu')))}}
+{{for firma in firmy:}}
+{{=LI(A(firma.jmeno, _href=URL(firma.funkce), _class=request.function==firma.funkce and 'b' or ''))}}
+{{pass}}
+{{end}}
+
+{{for cinnost in cinnosti:}}
+   	{{ciselnik_cinnost = typy_praci.exclude(lambda row: row.cinnost_id==cinnost.id)}}
+	{{=A(T("nová položka"),
+    _href=URL('pridej',args=(request.function, cinnost.id),user_signature=True),
+    _class="table-top-right")}}
+	{{=TOGGLE('table#databaze-typu-prace-%s tbody'%cinnost.strojovy, len(ciselnik_cinnost), _class="table-top-right")}}
+<span class="right silver">{{=len(ciselnik_cinnost) and '%s %s'%(len(ciselnik_cinnost),len(ciselnik_cinnost)==1 and T("položka") or len(ciselnik_cinnost)<5 and T("položky") or T("položek")) or T("žádná položka")}}</span>
+    <b>{{=unicode(cinnost.nazev,'utf-8').upper()}}</b><br />
+
+	{{hlavicky = popisy.find(lambda row: row.popis.cinnost_id==cinnost.id)}}
+    <table align="center" width="100%" border="1" class="databaze-typu-prace" class="databaze-typu-prace" id="databaze-typu-prace-{{=cinnost.strojovy}}">
+        {{udaje=[]}}
+    <thead>{{for hlavicka in hlavicky:}}
+        <th>{{=hlavicka.vlastnost.nazev}}
+          {{jednotka = hlavicka.vlastnost.jednotka}}
+          {{if hlavicka.popis.jednotka:}}{{jednotka+='/'+hlavicka.popis.jednotka}}{{pass}}
+          {{jednotka = jednotka.replace('2','<sup>2</sup>')}}
+          {{=XML(jednotka)}}
+		</th>
+        {{udaje+=[hlavicka.vlastnost.strojovy]}}
+        {{pass}}<th></th></thead>
+    <tbody style="display: none;">
+        {{radek=0}}
+        {{for typ_prace in ciselnik_cinnost:}}{{radek+=1}}
+        <tr><!--class="nth-child-{{='%s'%(radek%2 and 'odd' or 'even')}}"-->
+        {{for udaj in udaje:}}<td>
+            {{hodnota=typ_prace.__dict__[udaj]}}{{if type(hodnota)==bool:}}
+            {{=hodnota and T("ano") or '--'}}{{else:}}
+            {{=typ_prace.__dict__[udaj]}}{{pass}}</td>{{pass}}
+        {{args=(request.function, cinnost.id, typ_prace.id)}}
+        {{=TD(A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed']),
+    				 _href=URL('edit',args=args,user_signature=True),
+             _title=ikony['ed']), ' ',
+    				A(IMG(_src=URL('static','images/del.png'), _alt=ikony['rm']),
+    				 _href=URL('smaz',args=args,user_signature=True),
+             _title=ikony['rm'],
+    				 _onclick="if (!confirm('Chcete-li opravdu trvale odstranit položku --- "+typ_prace.nazev+" ---, klepněte na [OK].')) return false;")
+        )}}
+        </tr>{{pass}}
+    	</tbody>
+	</table>
+{{pass}}

@@ -1,0 +1,71 @@
+{{extend 'layout.html'}}
+
+{{block navigace}}
+{{=LI(B(T('Poptávky')))}}
+{{=LI(A(T('vše'), _href=URL('vse'), _class=request.function=='vse' and 'b' or ''))}}
+{{=LI(A(T('zatím nerealizovat'), _href=URL('poptavky'), _class=request.function=='poptavky' and 'b' or ''))}}
+{{=LI(A(T('výroba'), _href=URL('vyroba'), _class=request.function=='vyroba' and 'b' or ''))}}
+{{=LI(A(T('kompletace'), _href=URL('kompletace'), _class=request.function=='kompletace' and 'b' or ''))}}
+{{=LI(A(T('aktivní (výroba a kompletace)'), _href=URL('aktivni'),
+	_class=request.function=='aktivni' and 'b' or ''))}}
+{{=LI(A(T('vydáno'), _href=URL('vydano'), _class=request.function=='vydano' and 'b' or ''))}}
+{{end}}
+
+<div class="nad_table">
+<div class="left">{{=pocet}}</div>
+<div class="left">{{=strankovani}}</div>
+    <!--<div class="right">{{=filtr}}</div> fungovalo špatně-->
+</div>
+
+<table align="center" width="100%" border="1">{{=TR(
+			TH(A(T('Číslo'), _href=URL(args=(request.args
+                    and request.args[0]=='c' and 'C' or 'c', 0)))),
+    		TH(A(T('Popis'), _href=URL(args=(request.args
+                    and request.args[0]=='p' and 'P' or 'p', 0)))),
+    		TH(A(T('Zákazník'), _href=URL(args=(request.args
+                    and request.args[0]=='z' and 'Z' or 'z', 0)))),
+			TH(T('Stav')),
+			TH(T('Položek')),
+			TH(T('Zadáno')),
+			TH(A(T('Má být'), _href=URL(args=(request.args
+                    and request.args[0]=='d' and 'D' or 'd', 0)))),
+			TH(T('Volby')),
+    	)}}
+    {{if poptavky:}}
+    {{for radek,poptavka in enumerate(poptavky):}}
+  		{{if radek==per_page: break}}
+      {{args=[poptavka.poptavka.id]}}{{args.extend(request.args or ())}}
+      {{prefix = poptavka.poptavka.cislo[:1]}}
+      {{class_cislo = ('tdo' if prefix=='O' else
+                    ('tdrp' if prefix=='R' else
+                    ('tdf' if prefix=='F' else '')))}}
+      {{=TR(
+        TD(poptavka.poptavka.cislo, _class=class_cislo),  
+        poptavka.poptavka.popis,
+        poptavka.zakaznik.jmeno,
+        '%s%s' % (dict(p=T('zatím nerealizovat'),v=T('výroba'),
+              k=T('kompletace'),e=T('vydáno'))[poptavka.poptavka.stav],
+        poptavka.poptavka.cast_ne and ' (%s)'%T("část zatím ne") or ''),
+        poptavka.poptavka.polozek_,
+        poptavka.poptavka.zapsano_dne.strftime(datetimeformat),
+        poptavka.poptavka.ma_byt_dne and
+            poptavka.poptavka.ma_byt_dne.strftime(dateformat) or '',
+        TD(A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed']),
+            _href=URL('edit',args=args,user_signature=True),
+            _title=ikony['ed']), ' ',
+            poptavka.poptavka.foto_ and
+              A(IMG(_src=URL('static','images/foto_show.png'),
+                _alt=ikony['fs']),
+              _href=URL('foto_show', args=args, user_signature=True),
+              _title=ikony['fs']) or '',
+            poptavka.poptavka.stav=='p' and
+              A(IMG(_src=URL('static','images/del.png'), _alt=ikony['rm']),
+              _href=URL('smaz',args=args,user_signature=True),
+              _title=ikony['rm'],
+              _onclick="if (!confirm('Chcete-li opravdu trvale odstranit poptávku --- "+poptavka.poptavka.cislo+" ---, klepněte na [OK].')) return false;") or ''
+          ),
+  	      _class="nth-child-%s"%(radek%2 and 'odd' or 'even'),
+        )}}
+      {{pass #for}}
+   	  {{pass #if - nutný pro reccount=0 jinak havaruje bez args}}
+    </table>

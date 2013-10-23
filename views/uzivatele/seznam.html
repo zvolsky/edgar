@@ -1,0 +1,56 @@
+{{extend 'layout.html'}}
+
+{{block navigace}}						
+<li><b>Seznam uživatelů</b></li>
+{{end}}		
+
+<div class="nad_table">
+<div class="left">{{=dalsi('odsazenoH')}}</div>
+</div>
+
+<table align="center" width="100%" border="1">{{=TR(
+			TH(T('Příjmení')),
+			TH(T('Křestní jméno')),
+			TH(T('Jako uživatel')),
+			TH(T('Firma')),
+			TH(T('Administrátor')),
+			TH(T('Blokován')),
+			TH(T('Změnit')),
+    	)}}
+{{for radek,uzivatel in enumerate(uzivatele):}}
+ 	{{admin=uzivatel.auth_user.id in admini and B(T('ano')) or ''}}
+ 	{{=TR(
+		B(uzivatel.auth_user.last_name),
+		uzivatel.auth_user.first_name,
+		uzivatel.auth_user.username,
+		uzivatel.firma.jmeno or '',
+			
+		TD(admin, ' ', uzivatel.auth_user.id!=auth.user_id and
+					A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed'], _height="17"),
+					 _href=URL('admin_vezmi' if admin else 'admin_dej',
+              args=uzivatel.auth_user.id, user_signature=True),
+					 _title=T("poskytnout/odebrat práva administrátora")) or ''),
+						
+		TD(uzivatel.auth_user.registration_key and T('blokován') or '', ' ',
+    				uzivatel.auth_user.id!=auth.user_id and
+    				A(IMG(_src=URL('static','images/edit.png'),
+             _alt=ikony['ed'], _height="17"),
+    				 _href=URL('blokace', args=uzivatel.auth_user.id,
+                  user_signature=True),
+    				 _title=T("blokovat/povolit")) or ''),
+    
+ 		TD(A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed']),
+    				 _href=URL('edit',args=uzivatel.auth_user.id,user_signature=True),
+             _title=ikony['ed']), ' ',
+    				uzivatel.auth_user.id!=auth.user_id and
+    				A(IMG(_src=URL('static','images/del.png'), _alt=ikony['rm']),
+    				 _href=URL('smaz',args=uzivatel.auth_user.id,user_signature=True),
+             _title=ikony['rm'],
+    				 _onclick="if (!confirm('Chcete-li opravdu trvale odstranit uživatele --- "+
+    				 	uzivatel.auth_user.username+" ---, klepněte na [OK]')) return false;")
+    				or ''),
+    		
+ 		_class="nth-child-%s"%(radek%2 and 'odd' or 'even'),
+   	)}}
+ 	{{pass}}
+</table>

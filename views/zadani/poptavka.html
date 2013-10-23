@@ -1,0 +1,22 @@
+{{extend 'layout.html'}}
+
+<div class='pruh'>
+{{if zakaznik:}}
+	{{=DIV(B(zakaznik.jmeno, _class='large'), BR(),
+	'(%s%s)' % (zakaznik.staly and '%s - '%T('stálý') or '', zakaznik.koeficient),
+	P(zakaznik.telefon or '', ' ', zakaznik.email or '',
+    A(SPAN(T("opravit údaje"), _class='odsazenoH'),
+    _href=URL('zakaznici', 'edit', args=(zakaznik.id, 'np'),
+            user_signature=True))),
+    _class='vypis left')}}
+	{{form_zmen['_class'] = 'right'}}{{=form_zmen}}
+{{else:}}
+    {{form_zvol['_class'] = 'left'}}
+	{{form_novy['_class'] = 'right'}}
+	{{=form_zvol}}{{=form_novy}}
+	{{pass}}
+</div>
+
+{{if zakaznik:}}
+	{{=form_vice}}
+	{{pass}}

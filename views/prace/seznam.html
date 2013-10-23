@@ -1,0 +1,51 @@
+{{extend 'layout.html'}}
+
+{{block navigace}}						
+<li><b>Seznam prací</b></li>
+{{end}}		
+
+<table align="center" width="100%" border="1">{{=TR(
+			TH(T('Počet')),
+			TH(T('Položka')),
+			TH(T('šíř x výš')),
+			TH(T('Činnost')),
+			TH(T('Práce')),
+			TH(T('Množství')),
+			TH(T('Má být dne')),
+			TH(T('Dokončeno')),
+			TH(T('Poptávka')),
+			TH(),
+    	)}}
+    {{for radek,prace1 in enumerate(prace):}}
+    	{{=TR(
+  			prace1.polozka.ks,
+  			prace1.polozka.popis,
+  			'%s x %s' % (prace1.polozka.sirka, prace1.polozka.vyska),
+  			prace1.cinnost.nazev,
+  			prace1.typprace.nazev,
+  			prace1.prace.mnozstvi,
+  			TD(prace1.poptavka.ma_byt_dne
+              and prace1.poptavka.ma_byt_dne.strftime(dateformat) or '',
+              _class=not prace1.prace.dokonceno
+                        and prace1.poptavka.ma_byt_dne
+                        and prace1.poptavka.ma_byt_dne<=date.today()
+                        and 'hori' or 'nehori'),
+  			TD(prace1.prace.dokonceno
+              and prace1.prace.dokonceno.strftime(datetimeformat) or '',
+ 					A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['end'],
+           _height="17"),
+           _title=ikony['end'],
+					 _href=URL('dokonceni', args=prace1.prace.id, user_signature=True),
+    			 _onclick="if (!confirm('Bude změněno označení, zda práce byla dokončena - bude zaznamenán (případně odstraněn) čas dokončení.')) return false;",
+           _class='odsazenoH')),
+  			TD(prace1.poptavka.cislo,
+ 					A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed'],
+           _height="17"),
+					 _href=URL('poptavky', 'edit',
+              args=prace1.poptavka.id, user_signature=True),
+           _class='right odsazenoH')),
+  			prace1.poptavka.popis,
+    		_class="nth-child-%s"%(radek%2 and 'odd' or 'even'),
+    	)}}
+    	{{pass}}
+    </table>

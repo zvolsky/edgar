@@ -1,0 +1,5 @@
+{{extend 'layout.html'}}
+
+{{for foto in fotos:}}
+  {{=DIV(IMG(_src='/download/'+foto), _class='center odsazeno')}}
+  {{pass}}

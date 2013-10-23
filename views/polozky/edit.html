@@ -1,0 +1,9 @@
+{{response.files.append(URL('static','css/edgar_masky.css'))}}
+{{extend 'layout.html'}}
+
+<form action="#" enctype="multipart/form-data" method="post">
+{{=DIV(maska, _id=postup.maska_id, _class="maska")}}
+<div style='clear: both;' />
+{{=TABLE(form[0][prvku_masky:])}}
+  <input type="hidden" name="_formname" value="polozky" />
+</form>

@@ -1,0 +1,110 @@
+{{extend 'layout.html'}}
+
+<div class="vypis"><p>{{=B(poptavka.zakaznik.jmeno)}}
+{{=SPAN('%s (%s)'%(poptavka.zakaznik.staly and T("stálý") or '', poptavka.zakaznik.koeficient), _class='odsazenoH')}}
+{{=SPAN(poptavka.zakaznik.telefon or '', ' ', poptavka.zakaznik.email or '', _class='odsazenoH')}}
+{{=A(SPAN(T("opravit údaje zákazníka"), _class='odsazenoH'),
+  _href=URL('zakaznici', 'edit',
+  args=(poptavka.zakaznik.id, 'ep', request.args[0]), user_signature=True))}}
+  </p></div>
+
+{{from edgar2 import get_stav}}
+<div class="pruh">
+
+<table class="right"><tbody>
+{{=TR(
+    T("zadal"),
+    I(poptavka.zadal.username),
+    ',',
+    poptavka.poptavka.zapsano_dne.strftime(datetimeformat))}}
+{{=poptavka.poptavka.vyzvednuto and TR(
+    B(T("vydal")),
+    poptavka.vydal.username and B(I(poptavka.vydal.username)) or '',
+    ',',
+    poptavka.poptavka.vyzvednuto and
+      B(poptavka.poptavka.vyzvednuto.strftime(datetimeformat)) or '') or ''}}
+</tbody></table>
+
+<table>
+<thead><th /><th />
+{{=TH(T("položek"))}}{{=TH(T("připravit do"))}}{{=TH(T("stav"))}}{{=TH(T("cena"))}}
+{{if poptavka.poptavka.sleva:}}
+  {{=TH(poptavka.poptavka.sleva<0 and T("sleva") or T("přirážka"))}}
+  {{=TH(T("celkem"))}}{{pass}}
+</thead>
+
+<tbody>
+{{=TD(B(poptavka.poptavka.cislo))}}
+{{=TD(SPAN(B(poptavka.poptavka.popis), _class='large odsazenoH'))}}
+{{=TD(poptavka.poptavka.polozek_, _class="center")}}
+<td>{{=poptavka.poptavka.stav!='p' and poptavka.poptavka.ma_byt_dne and poptavka.poptavka.ma_byt_dne.strftime(dateformat) or ''}}
+{{=poptavka.poptavka.urgentni and T("urgentní") or ''}}</td>
+{{=TD(SPAN(B(T(get_stav(poptavka.poptavka.stav))), ' ', poptavka.poptavka.cast_ne and ', %s'%T("část ne") or '', _class='odsazenoH'))}}
+{{=TD(poptavka.poptavka.sleva and poptavka.poptavka.cena or B(poptavka.poptavka.cena), _class="num")}}
+{{if poptavka.poptavka.sleva:}}
+  {{=TD(poptavka.poptavka.sleva, _class="num")}}
+  {{=TD(B(poptavka.poptavka.cena_zakaznik), _class="num")}}
+  {{pass}}
+{{=TD(A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed']),
+  _href=URL('edithdr', args=request.args[0], user_signature=True),
+  _title=ikony['ed'], _class='odsazenoH'))}}
+</table>
+<p>{{=poptavka.poptavka.poznamka}}</p>
+</div>
+
+{{if len(polozky):}}
+  <table>
+  <th />
+  {{=TH(T("ks"))}}
+  {{=TH(T("Popis položky"))}}
+  {{=TH(T("šířka"))}}
+  <th />
+  {{=TH(T("výška"))}}
+  <th /><th />
+  <tbody>
+  {{for polozka in polozky:}}
+    <tr>
+    {{=TD(polozka.zatim_ne and T("zatím ne") or '', _class='odsazenoH')}}
+    {{=TD(polozka.ks)}}
+    {{=TD(polozka.popis)}}
+    {{=TD(polozka.sirka, _align='right')}}
+    {{=TD('x', _class='odsazenoH')}}
+    {{=TD(polozka.vyska)}}
+    {{=TD(A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed']),
+		 _href=URL('polozky', 'edit',
+      args=(request.args[0], polozka.id), user_signature=True),
+		 _title=ikony['ed']), ' ',
+    A(IMG(_src=URL('static','images/copy.png'),
+        _alt=ikony['cp']),
+        _href=URL('polozky', 'kopie',
+        args=(request.args[0], polozka.id), user_signature=True),
+        _title=ikony['cp']), ' ',
+    A(IMG(_src=URL('static','images/foto_new.png'),
+        _alt=ikony['fn']),
+        _href=URL('polozky', 'foto',
+        args=(request.args[0], polozka.id), user_signature=True),
+        _title=ikony['fn']), ' ',
+    polozka.foto and A(IMG(_src=URL('static','images/foto_show.png'),
+        _alt=ikony['fs']),
+        _href=URL('polozky', 'foto_show',
+        args=(request.args[0], polozka.id), user_signature=True),
+        _title=ikony['fs']) or '')}}
+		{{=TD(A(IMG(_src=URL('static','images/del.png'), _alt=ikony['rm']),
+    	 _href=URL('polozky', 'smaz',
+        args=(request.args[0], polozka.id), user_signature=True),
+    	 _title=ikony['rm'],
+    	 _onclick="if (!confirm('Chcete-li opravdu odstranit položku --- "+polozka.popis+" ---, klepněte na [OK].')) return false;",
+       _class='odsazenoH')
+    	 )}}
+    {{=TD(polozka.poznamka, _class='odsazenoH')}}
+    </tr>
+    {{pass}}
+  </tbody></table>
+  {{pass}}
+
+{{=FORM(P(T("Přidat položku poptávky")), postup,
+  INPUT(_type='submit', _name='postup',
+    _value=T('pro vybraný postup')))}}
+<!-- , ' ',
+  INPUT(_type='submit', _name='komplet',
+    _value=T('kterékoli práce/materiál')) -->

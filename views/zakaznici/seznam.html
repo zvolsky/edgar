@@ -1,0 +1,39 @@
+{{extend 'layout.html'}}
+
+<div class="nad_table">
+<div class="left">{{=pocet}}</div>
+<div class="left">{{=dalsi()}}</div>
+<div class="left">{{=strankovani}}</div>
+<div class="right">{{=filtr}}</div>
+</div>
+
+<table align="center" width="100%" border="1">{{=TR(
+			TH(A(T('Jméno'), _href=URL(args=(request.args and request.args[0]=='j' and 'J' or 'j', 0)))),
+    		TH(A(T('Telefon'), _href=URL(args=(request.args and request.args[0]=='t' and 'T' or 't', 0)))),
+			TH(T('Koeficient')),
+			TH(T('Stálý')),
+			TH(T('Volby')),
+    	)}}
+    {{if zakaznici:}}
+    {{for radek,zakaznik in enumerate(zakaznici):}}
+		{{if radek==per_page: break}}
+	    {{args=[zakaznik.id]}}{{args.extend(request.args or ())}}
+    	{{=TR(
+			TD(zakaznik.jmeno),
+			TD(zakaznik.telefon),
+			TD(zakaznik.koeficient),
+			TD(zakaznik.staly and 'ano' or ''),
+    		TD(A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed']),
+    				 _href=URL('edit',args=args,user_signature=True),
+             _title=ikony['ed']), ' ',
+    				A(IMG(_src=URL('static','images/del.png'), _alt=ikony['rm']),
+    				 _href=URL('smaz',args=args,user_signature=True),
+             _title=ikony['rm'],
+    				 _onclick="if (!confirm('Chcete-li opravdu trvale odstranit zákazníka --- "+zakaznik.jmeno+" ---, klepněte na [OK]. Nicméně nebude smazán, má-li evidovány nějaké poptávky')) return false;")
+    				),
+    		
+    		_class="nth-child-%s"%(radek%2 and 'odd' or 'even'),
+    	)}}
+    	{{pass #for}}
+    	{{pass #if - nutný pro reccount=0 jinak havaruje bez args}}
+    </table>

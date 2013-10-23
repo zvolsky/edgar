@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Edgar v0.2</title>
+<meta http-equiv="Content-Language" content="">
+<meta name="copyright" content="http://www.xxx.cz">
+<meta name="author" content="Mirek Zvolský - http://www.xxx.cz">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<link rel="shortcut icon" type="image/x-icon" href="{{=URL('static','images/favicon.ico')}}">
+<link rel="apple-touch-icon" href="{{=URL('static','images/favicon.png')}}">
+{{
+is_admin = auth.has_membership('Admin')
+response.files.append(URL('static','images/favicon.ico'))
+response.files.append(URL('static','css/edgar.css'))
+}}
+{{include 'web2py_ajax.html'}}
+</head>
+<body>
+<div class="flash">{{=response.flash or ''}}</div>
+
+<div id="container">
+	<div id="header">
+		<h1>
+            <a href="{{=URL('default','index')}}"><img src="{{=URL('static','images/logoEdgar.png')}}" border="0" title="Edgar v0.2"></a>
+		</h1>
+        {{if is_admin:}}<div id="admin-menu" class="hid">
+        {{=A(T('Uživatelé'), _href=URL('uzivatele','seznam'))}}
+        {{=A(T('Zákazníci'), _href=URL('zakaznici','seznam'))}}
+        {{=A(T('Typy prací / materiálu'), _href=URL('typypraci','obrazkarna'))}}
+        </div>{{pass}}
+        {{=A(B('+', _class="highlight"), T('Nová poptávka'), _href=URL('zadani','zadani_clear'), _class='right')}}
+        {{=A(T('Přehled práce'), _href=URL('prace','seznam'), _class='right')}}
+        {{=A(T('Přehled poptávek'), _href=URL('poptavky','aktivni'), _class='right')}}
+    </div>
+	<div id="navigation">
+        <ul>{{block navigace}}{{end}}</ul>
+	</div>
+	<div id="content">
+        {{include}}
+	</div>
+	<div id="footer_fixed">
+		<div id="footer">
+			<span class="copy">© Zvolský,Sojka, 2013</span>
+            {{=auth.user and auth.user.username or T('nepřihlášen')}}
+{{if auth.user:}}
+[ {{=A(T('odhlásit se'), _href=URL('default', 'user', args='logout'))}} ]
+<!--A(T('přihlásit se'), _href=URL('default', 'user', args='login'))-->
+[ {{=A(T("změnit heslo"), _href=URL('default', 'user', args='change_password'))}} ]{{pass}}
+{{if is_admin:}}
+[ <a href="#" onclick="document.cookie=&#39;adminmenu=1;path=/&#39;;$(&#39;#admin-menu&#39;).toggle();return false;">admin menu</a> ]{{pass}}
+		</div>
+	</div>
+</div>
+
+</body></html>

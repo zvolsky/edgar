@@ -1,0 +1,5 @@
+Kromě nakopírování upraveného českého calendar.js je potřeba:
+Zadat pro DAL validátory IS_EMPTY_OR(IS_DATETIME(format='%d.%m.%Y %H:%M'))
+  (a obdobně pro DATE) a
+ve view web2py_ajax.html nastavit formáty pro ajax.
+Je-li použito T(), musí být příslušné řetězce správně přeloženy. 

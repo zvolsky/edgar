@@ -1,0 +1,75 @@
+#databaze-list, #databaze-zakazniku, .databaze-typu-prace {margin-bottom:16px;}
+#databaze-list th, #databaze-zakazniku th, .databaze-typu-prace th {padding:4px 1px;font-size:11px;}
+#databaze-list td, #databaze-zakazniku td, .databaze-typu-prace td {padding:2px 3px;}
+#databaze-list td:first-child + td + td + td + td,
+#databaze-list td:first-child + td + td + td + td + td,
+#databaze-list td:first-child + td + td + td + td + td + td + td,
+#databaze-zakazniku td:first-child + td + td
+{
+	text-align:right;
+}
+#databaze-list td:first-child + td + td + td + td + td + td,
+#databaze-zakazniku td:first-child + td,
+#databaze-zakazniku td:first-child + td + td + td
+{
+	text-align:center;
+}
+.databaze-typu-prace td:last-child {text-align:center;Xpadding:0;}
+.databaze-typu-prace td:last-child a {
+	text-decoration:none;
+	/*font-weight:bold;font-size:8px;color:#eee;
+	background:#d12;
+	padding:1px 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	behavior: url(/css/PIE.htc);
+	position:relative;*/
+}
+.databaze-typu-prace td a.edit {display:inline-block;background:url('img/edit_16x16.png');width:16px;height:16px;margin:0 1px 1px;}
+.databaze-typu-prace td a.trash {display:inline-block;background:url('img/delete_16x16.png');width:16px;height:16px;margin:1px;}
+.databaze-typu-prace
+{
+	margin-top:4px;
+}
+.databaze-typu-prace td[colspan]
+{
+	text-align:left;
+	padding:4px 2px 2px;
+	color:#ccc;
+}
+
+#novy-typ-prace
+{
+	position:fixed;
+	width:940px;
+	z-index:1000;
+	display:none;
+	background:#FFFFCC;
+	padding:10px;
+	margin-bottom:10px;
+	border:1px solid #ddd;
+}
+#novy-typ-prace a {color:#444;text-decoration:none;font-size:13px;line-height:1.4em;}
+.novy-typ-prace form {display:none;background:#FFFFCC;padding:5px 10px 12px;margin-bottom:6px;border:1px solid #eee;Xfont-size:10px;}
+.novy-typ-prace form label {display:inline-block;width:180px;}
+.novy-typ-prace input[type=text] {padding:1px;font-size:12px;margin:1px 0;}
+.novy-typ-prace input[type=submit], .novy-typ-prace input[type=reset] {float:right;padding:10px;width:160px;margin:-20px 12px 0 0;clear:both;font-weight:bold;color:#333;}
+.novy-typ-prace input[type=submit] {margin-top:-4.9em;}
+.novy-typ-prace input[type=reset] {color:#aaa;padding:1px 10px;font-size:10px;}
+
+#novy-typ-prace h2.bg {
+	position:absolute;
+	margin:10px 0 0 350px;
+	color:#FaFaCa;
+	font-size:40px;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
