@@ -30,7 +30,7 @@ response.files.append(URL('static','css/edgar.css'))
         {{=A(T('Zákazníci'), _href=URL('zakaznici','seznam'))}}
         {{=A(T('Typy prací / materiálu'), _href=URL('typypraci','obrazkarna'))}}
         </div>{{pass}}
-        {{=A(B('+', _class="highlight"), T('Nová poptávka'), _href=URL('zadani','zadani_clear'), _class='right')}}
+        {{=A(B('+', _class="highlight"), T('Nová poptávka'), _href=URL('polozka','nova'), _class='right')}}
         {{=A(T('Přehled práce'), _href=URL('prace','seznam'), _class='right')}}
         {{=A(T('Přehled poptávek'), _href=URL('poptavky','aktivni'), _class='right')}}
     </div>
