@@ -4,8 +4,12 @@ from datetime import datetime
 dateformat = '%d.%m.%Y'             # T() zde dělá potíže ve strftime()
 datetimeformat = '%d.%m.%Y %H:%M'
 
+if request.is_local:
+    from gluon.custom_import import track_changes
+    track_changes(True)    # auto-reload modules
+
 migrate = True
-db = DAL('sqlite://poptavky.sqlite',pool_size=1,check_reserved=['all'], migrate=migrate)
+db = DAL('sqlite://poptavky.sqlite',pool_size=1,check_reserved=['all'])
 #db = DAL('mysql://cz:gEyTXVLfTeNeIrtxgCCE@mysql.server/cz$default',pool_size=5,check_reserved=['all'], migrate=migrate)
 #db = DAL('mysql://cz:gEyTXVLfTeNeIrtxgCCE@localhost/edgar',pool_size=5,check_reserved=['all'], migrate=migrate)
 #db = DAL('postgres://cz:gEyTXVLfTeNeIrtxgCCE@localhost/edgar',pool_size=5,check_reserved=['all'], migrate=migrate)
@@ -72,6 +76,9 @@ db.define_table('cinnost',        # číselník činností (prací pro poptávky
          requires=IS_EMPTY_OR(IS_IN_DB(db, db.firma.id, '%(jmeno)s'))),
         Field('nazev', label=T('Název'),
                 comment=T("název práce"), requires=IS_NOT_EMPTY()),
+        Field('chybi', default='bez ...', label=T('Text pro nepoužití'),
+                comment=T("zobrazovaný text, jestliže se nepoužije"),
+                requires=IS_NOT_EMPTY()),
         Field('func_todo', label=T('Volat funkci'),
                 comment=T("funkce pro stanovení 'mnozstvi' a 'info'")),
         Field('lbl', label=T('Label'), comment=cm_comment),
@@ -182,6 +189,28 @@ db.define_table('poptavka',
         '%(cislo)s, %(popis)s, %(zakaznik_)s, %(zapsano_dne)s - %(ma_byt_dne)s',
         )
 
+'''
+db.define_table('polozka',
+        Field('poptavka_id', db.poptavka),
+        Field('postup_id', db.postup),
+        Field('vydal_id', db.auth_user),
+        Field('ks', 'integer'),
+        Field('popis'),
+        Field('sirka', 'decimal(6,1)'),
+        Field('vyska', 'decimal(6,1)'),
+        Field('horni', 'decimal(6,1)'),
+        Field('pravy', 'decimal(6,1)'),
+        Field('dolni', 'decimal(6,1)'),
+        Field('levy', 'decimal(6,1)'),
+        Field('cena_1ks', 'decimal(8,2)'),
+        Field('cena', 'decimal(8,2)'),
+        Field('zatim_ne', 'boolean'),
+        Field('vyzvednuto', 'datetime'),
+        Field('foto', 'upload'),
+        Field('poznamka', 'text'),
+        )
+'''
+
 db.define_table('polozka',
         Field('poptavka_id', db.poptavka, label=T('Poptávka'),
                 comment=T("patří k poptávce"), writable=False),
@@ -222,6 +251,7 @@ db.define_table('polozka',
 db.define_table('typprace',
         Field('cinnost_id', db.cinnost, label=T('Činnost'),
                 readable=False, writable=False),
+        Field('hlavni', 'boolean', default=False, label=T('Předvolený typ')),
         Field('vyrobce', default='', label=T('Výrobce')),
         Field('typ', default='', label=T('Typ')),
         Field('nazev', default='', label=T('Název')),

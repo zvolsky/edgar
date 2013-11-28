@@ -1,0 +1,47 @@
+/*
+    controls.append(DIV(_style="clear:both;"))
+form.polozka .shrnuti {
+    clear: both;
+    float: left;
+    color: grey;
+    }
+form.polozka .zadani {
+    float: left;
+    }
+*/
+#cena {font-size: 32px;}
+
+form.polozka #ks {
+    width: 20px;
+    }
+form.polozka .rozmer {
+    width: 40px;
+    }
+form.polozka .okraj {
+    width: 30px;
+    }
+
+form.polozka #okraje {
+    height: 70px;
+    position: relative;
+    }
+form.polozka #okraje #levy {
+    position: absolute;
+    left: 0px;
+    top: 22px;
+    }
+form.polozka #okraje #horni {
+    position: absolute;
+    left: 35px;
+    top: 0px;
+    }
+form.polozka #okraje #pravy {
+    position: absolute;
+    left: 70px;
+    top: 22px;
+    }
+form.polozka #okraje #dolni {
+    position: absolute;
+    left: 35px;
+    top: 44px;
+    }
