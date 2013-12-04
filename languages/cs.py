@@ -572,6 +572,7 @@
 'pro firmu typický postup prací': 'pro firmu typický postup prací',
 'pro formulář zadání prací (položek poptávky)': 'pro formulář zadání prací (položek poptávky)',
 'pro kterou činnost je zvolen typ práce': 'pro kterou činnost je zvolen typ práce',
+'pro něj předvolený výrobní postup (jinak se vezme od firmy)': 'pro něj předvolený výrobní postup (jinak se vezme od firmy)',
 'pro vybraný postup': 'pro vybraný postup',
 'profile': 'profil',
 'Profile': 'Profile',

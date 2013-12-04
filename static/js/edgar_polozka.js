@@ -3,11 +3,16 @@ $(function(){
 
   $('#levy').blur(function(){
     if ($('#pravy').val()<=0) { 
-    $('#pravy').val($(this).val())}});
-
-  $('#horni').blur(function(){
+    $('#pravy').val(+$(this).val())};
+    if ($('#horni').val()<=0) { 
+    $('#horni').val(+$(this).val())};
     if ($('#dolni').val()<=0) { 
-    $('#dolni').val($(this).val())}});
+    $('#dolni').val(+$(this).val()+1.0)};
+    });
+
+  /* $('#horni').blur(function(){
+    if ($('#dolni').val()<=0) { 
+    $('#dolni').val($(this).val())}}); */
 
   $('select.typprace').change(function(){cena();});
   
@@ -21,8 +26,9 @@ function cena() {
   var horni = +$('#horni').val()||0;
   var pravy = +$('#pravy').val()||0;
   var dolni = +$('#dolni').val()||0;
-  var obvod_vnitrni = (sirka + vyska) / 50;
-  var obvod_vnejsi = (sirka + vyska + levy + horni + pravy + dolni) / 50;
+  var obvod_vnitrni = ((sirka + vyska) / 50).toFixed(3);
+  var obvod_vnejsi = ((sirka + vyska + levy + horni + pravy + dolni) / 50
+                      ).toFixed(3);
   var plocha_vnitrni = (sirka*vyska*0.0001).toFixed(4);
   var plocha_vnejsi = ((sirka+levy+pravy)*(vyska+horni+dolni)*0.0001).toFixed(4);
   var cena=0;
