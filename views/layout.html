@@ -50,6 +50,8 @@ response.files.append(URL('static','css/edgar.css'))
 [ {{=A(T("změnit heslo"), _href=URL('default', 'user', args='change_password'))}} ]{{pass}}
 {{if is_admin:}}
 [ <a href="#" onclick="document.cookie=&#39;adminmenu=1;path=/&#39;;$(&#39;#admin-menu&#39;).toggle();return false;">admin menu</a> ]{{pass}}
+{{if session.postup_txt:}}
+[ <a href="{{=URL('postupy', 'postupy')}}">předvolený postup</a> {{=session.postup_txt}} ]{{pass}}
 		</div>
 	</div>
 </div>

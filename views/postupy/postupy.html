@@ -1,0 +1,19 @@
+{{extend 'layout.html'}}
+
+<table class="postupy">
+<thead>
+  <th>nastavit předvolený</th>
+  <th>nová poptávka</th>
+</thead>
+{{for postup in postupy:}}
+    {{predvoleny = int(session.postup_id)}} 
+    {{=TR(
+      TD('' if postup.id==predvoleny else
+          A(IMG(_src=URL('static','images/edit.png'), _alt=ikony['ed']),
+          _href="%s"%URL('jen_zmenit', args=postup.id),
+          _class="right")),
+      TD(A(B(postup.nazev) if postup.id==predvoleny else postup.nazev,
+          _href="%s"%URL('polozka', 'nova', args=postup.id))),
+    )}}
+    {{pass}}
+</table>
