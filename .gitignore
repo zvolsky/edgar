@@ -1,6 +1,7 @@
 *.tmp
 *.bak
 *.bk
+*.fxp
 *.zip
 *.log
 *- kopie*.*

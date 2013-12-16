@@ -1,7 +1,8 @@
 {{response.files.append(URL('static', 'css/edgar_polozka.css'))}}
 {{response.files.append(URL('static', 'js/edgar_polozka.js'))}}
-
+{{response.files.append(URL('static', 'js/jquery.modal.mz.patch.js'))}}
 {{extend 'layout.html'}}
+<div class="overlay"></div>
 
 <p>Obvod vnitřní <b><span id="obvod_vnitrni"></span></b></p>
 <p>Obvod vnější <b><span id="obvod_vnejsi"></span></b></p>

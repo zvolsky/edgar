@@ -1,5 +1,7 @@
 # coding: utf8
 
+# import textwrap - v polozka()
+
 @auth.requires_login()
 def nova():
     postup_id = request.args(0) or session.postup_id
@@ -30,6 +32,7 @@ def nova():
 
 @auth.requires_login()
 def polozka():
+    import textwrap
     if not len(request.args):
         session.flash = "požadovaná položka poptávky nebyla nalezena"
         redirect(URL('default', 'index'))
@@ -78,7 +81,7 @@ def polozka():
         options = [OPTION(prace1.cinnost.chybi, _value=0, _cena=0)]
         for typprace in typyprace.find(
                         lambda row: row.cinnost_id==prace1.prace.cinnost_id):
-            options.append(OPTION(typprace.nazev, _value=typprace.id,
+            options.append(OPTION(typprace.zobrazit, _value=typprace.id,
                           _cena=typprace.cena))
             if not uz_vybrano and typprace.hlavni:
                 selected = typprace.id
@@ -110,8 +113,33 @@ def polozka():
             controls_prace.append(plus_def.nazev)
             controls_prace.append(
                 INPUT(_name=input_name, _value=old_value,
-                      _class=plus_def.css_class, _id='id%s'%plus_def.id))  
-
+                      _class=plus_def.css_class, _id='id%s'%plus_def.id))
+        
+        # poznámka
+        poznamka = textwrap.wrap(prace1.prace.poznamka
+                    or TFu('připiš poznámku'), 60)
+        controls_prace.append(A(
+                poznamka[0] + (len(poznamka)>1 and ' ...' or ''),
+                _href="#modal%s" % prace1.prace.id,
+                _id="apozn%s" % prace1.prace.id,
+                _class='modalLink %s' %
+                  ('poznamka' if prace1.prace.poznamka else 'pozn')))  
+        controls_prace.append(DIV(
+                TEXTAREA(prace1.prace.poznamka or '',
+                    _name='pozn%s'%prace1.prace.id,
+                    _class="text modalPozn",
+                    _id='pozn%s'%prace1.prace.id),
+                _class="modal", _id="modal%s" % prace1.prace.id,
+                     _focus="#pozn%s" % prace1.prace.id))
+        '''    
+                    <a class="modalLink" href="#">Click Me
+                    <div class="overlay"></div>
+                    <div class="modal">
+                    <a href="#" class="closeBtn">Close Me</a>
+                    <!-- content here -->
+                    </div>
+        '''
+                
         controls += [TR(
               TD(DIV('%s %s'%(prace1.cinnost.nazev.split('[')[0].strip(), 
                         prace1.typprace.nazev if uz_vybrano else ''),
@@ -163,7 +191,8 @@ def polozka():
         # SELECTy prací
         for prace1 in prace:
             hodnota = form.vars.get('p%s'%prace1.prace.id)
-            prace1.prace.update_record(typprace_id=hodnota or None)
+            prace1.prace.update_record(typprace_id=hodnota or None,
+                    poznamka=form.vars.get('pozn%s'%prace1.prace.id))
         # přídavné údaje prací 
         for input_plus in inputy_plus:
             # .append((input_name,tbl,tbl.id,prace.id,plus_def.id,old_value))

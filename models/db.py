@@ -260,6 +260,7 @@ db.define_table('typprace',
         Field('vyrobce', default='', label=TFu('Výrobce')),
         Field('typ', default='', label=TFu('Typ')),
         Field('nazev', default='', label=TFu('Název')),
+        Field('zobrazit', default='', label=TFu('Zobrazit text')),
         Field('cislo', default='', label=TFu('Číslo')),
         Field('cena', 'decimal(8,2)', default=0.0, label=TFu('Cena')),
         Field('tovarni', default='', label=TFu('Tovární číslo')),
@@ -314,6 +315,8 @@ db.define_table('prace',
                 writable=False),
         Field('cena2', 'decimal(8,2)', default=0.0, label=TFu('Cena okraje'),
                 comment=TFu("cena za tuto práci (za okraje)"), writable=False),
+        Field('poznamka', 'text', label=TFu('Poznámka'),
+                comment=TFu("poznámka k dílčí práci")),
         Field('dokonceno', 'datetime',
                 label=TFu("Dokončeno"), comment=TFu("kdy byla práce dokončena"),
                 requires=IS_EMPTY_OR(IS_DATETIME(format=datetimeformat)),
@@ -365,6 +368,10 @@ def def_plus(db, tabulka, typ):
 plus_def = db(db.plus_def).select()
 for plus_def1 in plus_def:
     def_plus(db, plus_def1.tabulka, plus_def1.typ)
+
+if migrate:
+    db((db.typprace.zobrazit=='')|(db.typprace.zobrazit==None)).update(
+                                                  zobrazit=db.typprace.nazev)
 
 def __vybrany_postup():
     if auth.user:
